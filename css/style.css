@@ -1,4 +1,3 @@
-  
 #imageSection{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr ;
@@ -6,8 +5,8 @@
 }
 #imageSection img{
 width: 100%;
-height: 300px;
-object-fit: cover;
+height: 500px;
+
 margin: 20px 0px;
 }
 body{
@@ -27,7 +26,6 @@ nav , footer{
     background-color: #9c6c23;
     display: block;
     margin: 20px 10;
-    border-radius: 20px;
     text-align: center;
     align-items: center;
     height: 70px;
