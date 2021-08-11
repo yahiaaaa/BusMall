@@ -1,6 +1,6 @@
 'use strict'
 
-let ImagArr = ['bag.jpg', 'banana.jpg', 'bathroom.jpg', 'boots.jpg', 'breakfast.jpg', 'bubblegum.jpg', 'chair.jpg', 'cthulhu.jpg', 'dog-duck.jpg', 'dragon.jpg', 'pen.jpg', 'pet-sweep.jpg', 'scissors.jpg', 'shark.jpg', 'sweep.png', 'tauntaun.jpg', 'unicorn.jpg', 'water-can.jpg', 'wine-glass.jpg'];
+let imgArr = ['bag.jpg', 'banana.jpg', 'bathroom.jpg', 'boots.jpg', 'breakfast.jpg', 'bubblegum.jpg', 'chair.jpg', 'cthulhu.jpg', 'dog-duck.jpg', 'dragon.jpg', 'pen.jpg', 'pet-sweep.jpg', 'scissors.jpg', 'shark.jpg', 'sweep.png', 'tauntaun.jpg', 'unicorn.jpg', 'water-can.jpg', 'wine-glass.jpg'];
 let counter = 0;
 let numberOfRound = 25;
 let r1, r2, r3;
@@ -12,28 +12,29 @@ let im1 = document.getElementById('im1');
 let im2 = document.getElementById('im2');
 let im3 = document.getElementById('im3');
 let result = document.getElementById('Result');
+let resetData = document.getElementById('Result2');
 let resultUl = document.getElementById('resultsUl');
 
 let ctx = document.getElementById('showData').getContext('2d');
 
 
-function BusMall(imageName, imageSrc) {
+function BusMall(imageName, imageSrc, numOfClick = 0, numOfShown = 0) {
 
   this.imageName = imageName;
   this.imageSrc = imageSrc;
-  this.numOfClick = 0;
-  this.numOfShown = 0;
+  this.numOfClick = numOfClick;
+  this.numOfShown = numOfShown;
   BusMall.images.push(this);
 }
 
 BusMall.images = [];
+checkDataExist();
 
-//---------------------------------------------------------------------
 
-for (let i = 0; i < ImagArr.length; i++) {
-  new BusMall(ImagArr[i].split('.')[0], ImagArr[i]);
+function getRandom(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
-//---------------------------------------------------------------------
+
 function getRandom(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
@@ -44,9 +45,9 @@ function render() {
 
 
   do {
-    r1 = getRandom(0, ImagArr.length - 1);
-    r2 = getRandom(0, ImagArr.length - 1);
-    r3 = getRandom(0, ImagArr.length - 1);
+    r1 = getRandom(0, imgArr.length - 1);
+    r2 = getRandom(0, imgArr.length - 1);
+    r3 = getRandom(0, imgArr.length - 1);
   }
   while (r1 === r2 || r1 === r3 || r3 === r2);
 
@@ -64,6 +65,7 @@ function render() {
   BusMall.images[r1].numOfShown++;
   BusMall.images[r2].numOfShown++;
   BusMall.images[r3].numOfShown++;
+  localStorage.localBusMall = JSON.stringify(BusMall.images);
 
   // console.log(busmall.images[r1]);
 }
@@ -83,7 +85,7 @@ function showImage(event) {
       BusMall.images[r2].numOfClick++;
     } else if (event.target.id === 'img3') {
       BusMall.images[r3].numOfClick++;
-    } 
+    }
     console.log(counter, numberOfRound);
     counter++;
 
@@ -91,14 +93,20 @@ function showImage(event) {
       render();
       arr2 = [r1, r2, r3];
       console.log(arr1 + ' ,,,, ' + arr2);
-    } while (!checkDublicate);
+    } while (!checkDublicate(arr1, arr2));
 
   } else if (counter >= numberOfRound) {
     result.style.visibility = 'visible';
+    resetData.style.visibility = 'visible';
   }
 }
+function resetMallData() {
+  localStorage.removeItem("localBusMall");
+  window.location.reload();
+}
+
 function showResult() {
-  if (result.textContent === 'reset') {
+  if (result.textContent === 'vote again') {
     window.location.reload();
   }
   else {
@@ -111,7 +119,7 @@ function showResult() {
       resultUl.appendChild(liE);
     }
 
-    result.textContent = 'reset';
+    result.textContent = 'vote again';
   }
 
 
@@ -159,9 +167,9 @@ function createMyChart(names, clikData, showData) {
           beginAtZero: true
         }
       }
-      
-        
-    
+
+
+
     }
   });
   console.log(myChart.data);
@@ -191,4 +199,17 @@ function getClickData() {
     arrayClick.push(BusMall.images[index].numOfClick);
   }
   return arrayClick;
+}
+function checkDataExist() {
+  if (localStorage.localBusMall) {
+    let localBusMallObj = JSON.parse(localStorage.localBusMall);
+    for (let x = 0; x < localBusMallObj.length; x++) {
+      new BusMall(localBusMallObj[x].imageName, localBusMallObj[x].imageSrc, localBusMallObj[x].numOfClick, localBusMallObj[x].numOfClick);
+    }
+  } else {
+    for (let i = 0; i < imgArr.length; i++) {
+      new BusMall(imgArr[i].split('.')[0], imgArr[i]);
+    }
+
+  }
 }
