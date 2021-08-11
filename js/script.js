@@ -118,7 +118,7 @@ function showResult() {
 
 }
 
-//checkDublicate([6, 2 , 3] , [1 , 5 , 9]);
+
 
 function checkDublicate(list1, list2) {
   for (let index = 0; index < list1.length; index++) {
@@ -136,6 +136,31 @@ function createMyChart(names, clikData, showData) {
   let myChart = new Chart(ctx, {
     type: 'bar',
     data: {
+      labels: names,
+      datasets: [{
+        label: '# of Votes',
+        data: showData,
+        backgroundColor: [
+          '#368B85'
+        ],
+      },
+      {
+        label: '# of Click time',
+        data: clikData,
+        backgroundColor: [
+          '#9E7777'
+        ],
+      }
+      ]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+      
+        
     
     }
   });
